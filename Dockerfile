@@ -1,3 +1,4 @@
+ARG IMAGE_TAG="latest"
 FROM clojure:openjdk-11-lein AS builder
 
 RUN apt-get -y update && apt-get -y install git
@@ -18,7 +19,6 @@ RUN git clone https://github.com/Strongpool/crux-metabase-driver.git \
     && lein localrepo install lib/dremio-jdbc-driver-4.1.7.jar com.dremio/dremio 4.1.7 \
     && DEBUG=1 LEIN_SNAPSHOTS_IN_RELEASE=true lein uberjar
 
-ARG IMAGE_TAG="latest"
 FROM metabase/metabase:${IMAGE_TAG}
 
 COPY --from=builder /build/crux-metabase-driver/target/uberjar/dremio.metabase-driver.jar /plugins
